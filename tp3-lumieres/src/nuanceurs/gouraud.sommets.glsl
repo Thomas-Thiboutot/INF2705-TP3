@@ -29,7 +29,6 @@ layout (std140) uniform MaterialParameters
 layout (std140) uniform LightModelParameters
 {
     vec4 ambient;       // couleur ambiante globale
-    bool localViewer;   // observateur local ou à l'infini?
     bool twoSide;       // éclairage sur les deux côtés ou un seul?
 } LightModel;
 
@@ -61,6 +60,7 @@ layout(location=8) in vec4 TexCoord;
 
 out Attribs {
     vec4 couleur;
+    vec3 lumiDir;
 } AttribsOut;
 
 
@@ -94,23 +94,20 @@ vec4 calculerReflexion( in int j, in vec3 L, in vec3 N, in vec3 O ) // pour la l
 
 void main( void )
 {
-    // appliquer la transformation standard du sommet (P * V * M * sommet)
     gl_Position = matrProj * matrVisu * matrModel * Vertex;
+    vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
 
     vec3 N = normalize(matrNormale * Normal);
     vec3 pos = vec3( matrVisu * matrModel * Vertex );
 
-    vec3 lumiDir = ( LightSource.position[0] ).xyz;
+    AttribsOut.lumiDir = ( matrVisu * LightSource.position[0] ).xyz - pos;
+    vec3 obsVec = -pos ;
 
-    vec3 obsVec = ( LightModel.localViewer ?
-                    (-pos) :        
-                    vec3( 0.0, 0.0, 1.0 ) ); 
+    vec3 L = normalize( AttribsOut.lumiDir ); // vecteur vers la source lumineuse
+    vec3 O = normalize( obsVec ); 
 
-    vec3 L = normalize( lumiDir ); 
-    vec3 O = normalize( obsVec );  
-    
-    vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
 
+    // couleur du sommet
     int j = 0;
     coul += calculerReflexion( j, L, N, O );
 

@@ -29,7 +29,6 @@ layout (std140) uniform MaterialParameters
 layout (std140) uniform LightModelParameters
 {
     vec4 ambient;       // couleur ambiante globale
-    bool localViewer;   // observateur local ou à l'infini?
     bool twoSide;       // éclairage sur les deux côtés ou un seul?
 } LightModel;
 
@@ -55,6 +54,7 @@ uniform sampler2D laTextureNorm;
 
 in Attribs {
     vec4 couleur;
+    vec3 lumiDir;
 } AttribsIn;
 
 out vec4 FragColor;
@@ -63,13 +63,12 @@ out vec4 FragColor;
 void main( void )
 {
     // ...
-    FragColor = AttribsIn.couleur; // la composante ambiante déjà calculée (dans nuanceur de sommets)
-
+    vec4 coul = AttribsIn.couleur; // la composante ambiante déjà calculée (dans nuanceur de sommets)
+    coul += FrontMaterial.ambient * (LightSource.ambient[0]);
     int j = 0;
     // vec4 coul = calculerReflexion( j, L, N, O );
     // ...
-    //FragColor = 0.01*coul + vec4( 0.5, 0.5, 0.5, 1.0 ); // gris moche!
-
+    FragColor = clamp( coul, 0.0, 1.0 );
     // Pour « voir » les normales, on peut remplacer la couleur du fragment par la normale.
     // (Les composantes de la normale variant entre -1 et +1, il faut
     // toutefois les convertir en une couleur entre 0 et +1 en faisant (N+1)/2.)
