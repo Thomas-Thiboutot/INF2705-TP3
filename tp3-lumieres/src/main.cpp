@@ -459,16 +459,31 @@ void FenetreTP::initialiser()
      };  // (0,+1,0), ... (0,0,-1), ... (+1,0,0), etc.
 
     // partie 2: définir les coordonnées de texture
-    // const GLfloat             // les différentes parties du monde  (voir figure 15)
-    // MOx1=0.0,   MOy1=0.0,  MOx2=3.0,  MOy2=3.0,    // le Monde
-    // ASx1=0.2,   ASy1=0.2,  ASx2=0.45, ASy2=0.6,    // l'Amérique du Sud
-    // AMx1=0.45,  AMy1=0.3,  AMx2=0.65, AMy2=0.7,    // l'Afrique + Moyen-Orient
-    // QCx1=0.275, QCy1=0.75, QCx2=0.35, QCy2=0.85,   // le Québec
-    // EUx1=0.45,  EUy1=0.7,  EUx2=0.55, EUy2=0.825,  // l'Europe (avec l'Angleterre ;))
-    // AUx1=0.8,   AUy1=0.25, AUx2=0.95, AUy2=0.45;   // l'Australie
+     const GLfloat             // les différentes parties du monde  (voir figure 15)
+     MOx1=0.0,   MOy1=0.0,  MOx2=3.0,  MOy2=3.0,    // le Monde
+     ASx1=0.2,   ASy1=0.2,  ASx2=0.45, ASy2=0.6,    // l'Amérique du Sud
+     AMx1=0.45,  AMy1=0.3,  AMx2=0.65, AMy2=0.7,    // l'Afrique + Moyen-Orient
+     QCx1=0.275, QCy1=0.75, QCx2=0.35, QCy2=0.85,   // le Québec
+     EUx1=0.45,  EUy1=0.7,  EUx2=0.55, EUy2=0.825,  // l'Europe (avec l'Angleterre ;))
+     AUx1=0.8,   AUy1=0.25, AUx2=0.95, AUy2=0.45;   // l'Australie
 
-    // GLfloat texcoordsTerre[2*4*6] = { ... };  // les coordonnées de texture pour la Terre (voir figure 15)
-    // GLfloat texcoordsAutre[2*4*6] = { ... };  // (0,0), (+1,0), etc.
+     GLfloat texcoordsTerre[2*4*6] =
+      {
+         0.0, 3.0,  0.0, 0.0,  3.0, 3.0,  3.0, 0.0,
+         0.2, 0.2,  0.45, 0.2,  0.2, 0.6,  0.45, 0.6,
+         0.45, 0.3,  0.65, 0.3,  0.45, 0.7,  0.65,0.7 ,
+         0.275, 0.75,  0.35, 0.75,  0.275, 0.85,  0.35, 0.85,
+         0.45, 0.7,  0.55, 0.7,  0.45, 0.825,  0.55, 0.825,
+         0.8, 0.25,  0.8, 0.45,  0.95, 0.25,  0.95, 0.45,
+       };  // les coordonnées de texture pour la Terre (voir figure 15)
+     GLfloat texcoordsAutre[2*4*6] = { 
+         0.0, 1.0,  0.0, 0.0,  1.0, 0.0,  1.0, 1.0,
+         0.0, 1.0,  0.0, 0.0,  1.0, 0.0,  1.0, 1.0,
+         0.0, 1.0,  0.0, 0.0,  1.0, 0.0,  1.0, 1.0,
+         0.0, 1.0,  0.0, 0.0,  1.0, 0.0,  1.0, 1.0,
+         0.0, 1.0,  0.0, 0.0,  1.0, 0.0,  1.0, 1.0,
+         0.0, 1.0,  0.0, 0.0,  1.0, 0.0,  1.0, 1.0,
+      };  // (0,0), (+1,0), etc.
 
     // allouer les objets OpenGL
     glGenVertexArrays( 3, vao );
@@ -489,6 +504,16 @@ void FenetreTP::initialiser()
     glEnableVertexAttribArray(locNormal);     
     // partie 2: charger les deux VBO pour les coordonnées de texture: celle pour la Terre sur le cube et pour les autres textures
     // ...
+    glBindBuffer( GL_ARRAY_BUFFER, vbo[1] );
+    glBufferData( GL_ARRAY_BUFFER, sizeof(texcoordsTerre), texcoordsTerre, GL_STATIC_DRAW );
+    glVertexAttribPointer( loclaTextureCoul, 2, GL_FLOAT, GL_FALSE, 0, 0 );
+    glEnableVertexAttribArray(loclaTextureCoul);
+
+    glBindBuffer( GL_ARRAY_BUFFER, vbo[3] );
+    glBufferData( GL_ARRAY_BUFFER, sizeof(texcoordsAutre), texcoordsAutre, GL_STATIC_DRAW );
+    glVertexAttribPointer( loclaTextureNorm, 2, GL_FLOAT, GL_FALSE, 0, 0 );
+    glEnableVertexAttribArray(loclaTextureNorm);
+
 
     glBindVertexArray(0);
 

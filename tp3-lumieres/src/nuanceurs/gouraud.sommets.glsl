@@ -60,56 +60,26 @@ layout(location=8) in vec4 TexCoord;
 
 out Attribs {
     vec4 couleur;
-    vec3 lumiDir;
+    vec3 lumiDir[3];
+    vec3 normale;
+    vec3 obsVec;
+    vec3 spotDir[3];
+    vec2 texCoord;
 } AttribsOut;
-
-
-float calculerSpot( in vec3 D, in vec3 L, in vec3 N )
-{
-    float spotFacteur = 0.0;
-    return( spotFacteur );
-}
-
-float attenuation = 1.0;
-vec4 calculerReflexion( in int j, in vec3 L, in vec3 N, in vec3 O ) // pour la lumière j
-{
-    vec4 coul = vec4(0);
-
-    // calculer l'éclairage seulement si le produit scalaire est positif
-    float NdotL = max( 0.0, dot( N, L ) );
-    if ( NdotL > 0.0 )
-    {
-        // calculer la composante diffuse
-        coul += attenuation * FrontMaterial.diffuse * LightSource.diffuse[j] * NdotL;
-
-        // calculer la composante spéculaire (Blinn ou Phong : spec = BdotN ou RdotO )
-        float spec = ( utiliseBlinn ?
-                       dot( normalize( L + O ), N ) : // dot( B, N )
-                       dot( reflect( -L, N ), O ) ); // dot( R, O )
-        if ( spec > 0 ) coul += attenuation * FrontMaterial.specular * LightSource.specular[j] * pow( spec, FrontMaterial.shininess );
-    }
-
-    return( coul );
-}
 
 void main( void )
 {
     gl_Position = matrProj * matrVisu * matrModel * Vertex;
     vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
+    coul += FrontMaterial.ambient * (LightSource.ambient[0]);
 
-    vec3 N = normalize(matrNormale * Normal);
     vec3 pos = vec3( matrVisu * matrModel * Vertex );
 
-    AttribsOut.lumiDir = ( matrVisu * LightSource.position[0] ).xyz - pos;
-    vec3 obsVec = -pos ;
+    AttribsOut.lumiDir[0] = ( matrVisu * LightSource.position[0] ).xyz - pos;
+    AttribsOut.obsVec = -pos ;
+    AttribsOut.normale = normalize(matrNormale * Normal) ;
+    AttribsOut.spotDir[0] = mat3(matrVisu) * -LightSource.spotDirection[0];
+    AttribsOut.couleur = coul;
 
-    vec3 L = normalize( AttribsOut.lumiDir ); // vecteur vers la source lumineuse
-    vec3 O = normalize( obsVec ); 
-
-
-    // couleur du sommet
-    int j = 0;
-    coul += calculerReflexion( j, L, N, O );
-
-    AttribsOut.couleur = clamp( coul, 0.0, 1.0 );
+    AttribsOut.texCoord = TexCoord.st;
 }
