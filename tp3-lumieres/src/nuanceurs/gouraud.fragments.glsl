@@ -110,10 +110,10 @@ void main( void )
     coul += FrontMaterial.diffuse * LightSource.ambient[0];//* NdotL;
     //coul += calculerReflexion( j, L, N, O ) * calculerSpot( D, L, N );
     
-    vec4 couleur0 = texture( laTextureCoul, AttribsIn.texCoord );
-    FragColor = couleur0;
+    //vec4 couleur0 = texture( laTextureCoul, AttribsIn.texCoord );
+    //FragColor = couleur0;
 
-    //FragColor = clamp(coul, 0.0, 1.0);
+    FragColor = clamp(coul, 0.0, 1.0);
     // Pour « voir » les normales, on peut remplacer la couleur du fragment par la normale.
     // (Les composantes de la normale variant entre -1 et +1, il faut
     // toutefois les convertir en une couleur entre 0 et +1 en faisant (N+1)/2.)
