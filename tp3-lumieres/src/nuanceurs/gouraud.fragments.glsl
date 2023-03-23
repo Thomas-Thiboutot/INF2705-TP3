@@ -54,7 +54,7 @@ uniform sampler2D laTextureNorm;
 
 in Attribs {
     vec4 couleur;
-    vec3 lumiDir[3];
+    vec3 lumiDir;
     vec3 normale;
     vec3 obsVec;
     vec3 spotDir[3];
@@ -99,18 +99,21 @@ float calculerSpot( in vec3 D, in vec3 L, in vec3 N )
 void main( void )
 {
     vec4 coul = AttribsIn.couleur;
-    vec3 L = normalize( AttribsIn.lumiDir[0] );
+    vec3 L = normalize( AttribsIn.lumiDir );
     vec3 O = normalize( AttribsIn.obsVec );  
     vec3 N = normalize( gl_FrontFacing ? AttribsIn.normale : -AttribsIn.normale );
     vec3 D = normalize( AttribsIn.spotDir[0] );
 
-    float NdotL = max( 0.0, dot( N, L ) );
+    //float NdotL = dot( N, L );
+    //if( (NdotL == 0.0) || (NdotL < 0.0) || (NdotL > 0.0) ) coul += LightSource.diffuse[0];
+    //int j = 0; 
+    coul += FrontMaterial.diffuse * LightSource.ambient[0];//* NdotL;
+    //coul += calculerReflexion( j, L, N, O ) * calculerSpot( D, L, N );
+    
+    vec4 couleur0 = texture( laTextureCoul, AttribsIn.texCoord );
+    FragColor = couleur0;
 
-    int j = 0;
-    coul += calculerReflexion( j, L, N, O ) * calculerSpot( D, L, N );
-    //vec4 couleur0 = texture( laTextureCoul, AttribsIn.texCoord );
-    //FragColor = couleur0;
-    FragColor = clamp(coul, 0.0, 1.0);
+    //FragColor = clamp(coul, 0.0, 1.0);
     // Pour « voir » les normales, on peut remplacer la couleur du fragment par la normale.
     // (Les composantes de la normale variant entre -1 et +1, il faut
     // toutefois les convertir en une couleur entre 0 et +1 en faisant (N+1)/2.)

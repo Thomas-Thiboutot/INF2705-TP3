@@ -55,12 +55,12 @@ uniform mat3 matrNormale;
 /////////////////////////////////////////////////////////////////
 
 layout(location=0) in vec4 Vertex;
-layout(location=2) in vec3 Normal;
-layout(location=8) in vec4 TexCoord;
+layout(location=1) in vec3 Normal;
+layout(location=8) in vec2 TexCoord;
 
 out Attribs {
     vec4 couleur;
-    vec3 lumiDir[3];
+    vec3 lumiDir;
     vec3 normale;
     vec3 obsVec;
     vec3 spotDir[3];
@@ -71,11 +71,11 @@ void main( void )
 {
     gl_Position = matrProj * matrVisu * matrModel * Vertex;
     vec4 coul = FrontMaterial.emission + FrontMaterial.ambient * LightModel.ambient;
-    coul += FrontMaterial.ambient * (LightSource.ambient[0]);
+    //coul += FrontMaterial.ambient * (LightSource.ambient[0]);
 
     vec3 pos = vec3( matrVisu * matrModel * Vertex );
 
-    AttribsOut.lumiDir[0] = ( matrVisu * LightSource.position[0] ).xyz - pos;
+    AttribsOut.lumiDir = ( matrVisu * LightSource.position[0] ).xyz - pos;
     AttribsOut.obsVec = -pos ;
     AttribsOut.normale = normalize(matrNormale * Normal) ;
     AttribsOut.spotDir[0] = mat3(matrVisu) * -LightSource.spotDirection[0];

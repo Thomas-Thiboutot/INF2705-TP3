@@ -469,12 +469,12 @@ void FenetreTP::initialiser()
 
      GLfloat texcoordsTerre[2*4*6] =
       {
-         0.0, 3.0,  0.0, 0.0,  3.0, 3.0,  3.0, 0.0,
-         0.2, 0.2,  0.45, 0.2,  0.2, 0.6,  0.45, 0.6,
-         0.45, 0.3,  0.65, 0.3,  0.45, 0.7,  0.65,0.7 ,
-         0.275, 0.75,  0.35, 0.75,  0.275, 0.85,  0.35, 0.85,
-         0.45, 0.7,  0.55, 0.7,  0.45, 0.825,  0.55, 0.825,
-         0.8, 0.25,  0.8, 0.45,  0.95, 0.25,  0.95, 0.45,
+        MOx1, MOy2,  MOx1, MOy1,  MOx2, MOy1,  MOx2, MOy2,
+        ASx1, ASy2,  ASx1, ASy1,  ASx2, ASy1,  ASx2, ASy2,
+        AMx1, AMy2,  AMx1, AMy1,  AMx2, AMy1,  AMx2, AMy2,
+        QCx1, QCy2,  QCx1, QCy1,  QCx2, QCy1,  QCx2, QCy2,
+        EUx1, EUy2,  EUx1, EUy1,  EUx2, EUy1,  EUx2, EUy2,
+        AUx1, AUy2,  AUx1, AUy1,  AUx2, AUy1,  AUx2, AUy2,
        };  // les coordonnées de texture pour la Terre (voir figure 15)
      GLfloat texcoordsAutre[2*4*6] = { 
          0.0, 1.0,  0.0, 0.0,  1.0, 0.0,  1.0, 1.0,
@@ -498,21 +498,21 @@ void FenetreTP::initialiser()
     glEnableVertexAttribArray(locVertex);
     // partie 1: charger le VBO pour les normales
     // ...
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(normales), normales, GL_STATIC_DRAW );  
     glVertexAttribPointer( locNormal, 3, GL_FLOAT, GL_FALSE, 0, 0 );
     glEnableVertexAttribArray(locNormal);     
     // partie 2: charger les deux VBO pour les coordonnées de texture: celle pour la Terre sur le cube et pour les autres textures
     // ...
-    glBindBuffer( GL_ARRAY_BUFFER, vbo[1] );
+    glBindBuffer( GL_ARRAY_BUFFER, vbo[2] );
     glBufferData( GL_ARRAY_BUFFER, sizeof(texcoordsTerre), texcoordsTerre, GL_STATIC_DRAW );
-    glVertexAttribPointer( loclaTextureCoul, 2, GL_FLOAT, GL_FALSE, 0, 0 );
-    glEnableVertexAttribArray(loclaTextureCoul);
+    glVertexAttribPointer( locTexCoord, 2, GL_FLOAT, GL_FALSE, 0, 0 );
+    glEnableVertexAttribArray(locTexCoord);
 
     glBindBuffer( GL_ARRAY_BUFFER, vbo[3] );
     glBufferData( GL_ARRAY_BUFFER, sizeof(texcoordsAutre), texcoordsAutre, GL_STATIC_DRAW );
-    glVertexAttribPointer( loclaTextureNorm, 2, GL_FLOAT, GL_FALSE, 0, 0 );
-    glEnableVertexAttribArray(loclaTextureNorm);
+    glVertexAttribPointer( locTexCoord, 2, GL_FLOAT, GL_FALSE, 0, 0 );
+    glEnableVertexAttribArray(locTexCoord);
 
 
     glBindVertexArray(0);
